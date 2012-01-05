@@ -1,0 +1,7 @@
+<& /Ticket/Elements/RTx-CreateLinkedTickets, Ticket => $Ticket &>
+<%init>
+	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
+</%init>
+<%args>
+	$Ticket => undef
+</%args>    

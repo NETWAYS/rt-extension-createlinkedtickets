@@ -1,0 +1,65 @@
+<&| /Widgets/TitleBox, title => loc('Create linked tickets'),
+	($can_modify ? (title_href => RT->Config->Get('WebPath')."/Ticket/ModifyLinks.html?id=".$Ticket->Id) : ()),
+	class => 'ticket-info-links'
+&>
+<div id="rtx-create-linked-tickets">
+<ul>
+% for my $link(@{ $links }) {
+	<li>
+		<a href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
+			<% $link->{'title'} %>
+		</a>
+	</li>
+% }
+</ul>
+</div>
+<script type="text/javascript">
+	if ("Ext" in window && typeof(window.Ext) === "object") {
+	
+		Ext.onReady(function() {
+			var testFunc = function(e, element, eOpts) {
+				e.preventDefault();
+				
+				var url = element.getAttribute('href');
+				
+				Ext.Msg.show({
+				     title:'Creating linked ticket',
+				     msg: 'You are about to create a linked ticket, you want to proceed?',
+				     buttons: Ext.Msg.YESNO,
+				     icon: Ext.Msg.QUESTION,
+				     fn: function(buttonId, text, opt) {
+				     	if (buttonId === "yes" && url) {
+				     		window.location.href = url;
+				     	}
+				     }
+				});
+			}
+			
+			var els = Ext.select('#rtx-create-linked-tickets ul li a');
+			
+			els.each(function(el, c, idx) {
+				el.on('click', testFunc);
+			});
+		});
+	
+	} else { 
+		alert("Please install RTx::ExtJS4 module to use this extension (RTx::CreateLinkedTickets)!");
+	} 
+</script>
+</&>
+<%init>
+	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
+	my $links = RT->Config->Get('RTx_CreateLinkedTickets_Config');
+	
+	if (ref($links) eq 'ARRAY' && scalar(@{ $links })) {
+	
+	} else {
+		return;
+	} 
+</%init>
+<%once>
+	use Data::Dumper;
+</%once>
+<%args>
+	$Ticket => undef
+</%args>

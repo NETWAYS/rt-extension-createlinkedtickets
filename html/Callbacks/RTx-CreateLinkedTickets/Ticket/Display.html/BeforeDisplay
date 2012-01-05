@@ -1,0 +1,27 @@
+<%init>
+	my $Ticket = ${$TicketObj};
+	
+	if (exists($ARGSRef->{'createLinkedTicket'}) && ref($Ticket) eq 'RT::Ticket' && $Ticket->Id) {
+		my ($id, $msg, $newTicket) = RTx::CreateLinkedTickets::createTicketByConfiguration(
+			Ticket => $Ticket,
+			Config => $ARGSRef->{'createLinkedTicket'}
+		);
+		
+		push @{ $Actions }, $msg;
+		
+		if (!$id) {
+			push @{ $Actions }, 'Creation of linked ticked failed!';
+		}
+	}
+	
+</%init>
+<%once>
+	use Data::Dumper;
+</%once>
+<%args>
+    $TicketObj		=> undef
+    $Tickets		=> ()
+    $Actions		=> ()
+    $title			=> undef
+    $ARGSRef		=> {}
+</%args>
