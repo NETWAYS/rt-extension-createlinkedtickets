@@ -1,6 +1,9 @@
 package RTx::CreateLinkedTickets;
 
-use version '1.0';
+use version;
+
+our $VERSION="1.0.0";
+
 use strict;
 
 use Data::Dumper;
