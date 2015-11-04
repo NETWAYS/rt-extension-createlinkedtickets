@@ -50,7 +50,7 @@ sub createTicketByConfiguration {
 	$Template->Load($c->{'template'});
 	
 	if (!$Template->Id) {
-		return (undef, loc('Could not load template'). ': '. $c->{'template'}, undef);
+		return (undef, 'Could not load template'. ': '. $c->{'template'}, undef);
 	}
 	
 	my $Transaction = RT::Transaction->new(
