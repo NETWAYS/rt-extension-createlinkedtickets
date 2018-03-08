@@ -13,7 +13,7 @@ use vars qw (
 	$config
 );
 
-$config = RT->Config->Get('RTx_CreateLinkedTickets_Config') || ();
+$config = RT->Config->Get('RTx_CreateLinkedTickets_Config') // [];
 
 use subs qw {
 	createLinkedTicket
