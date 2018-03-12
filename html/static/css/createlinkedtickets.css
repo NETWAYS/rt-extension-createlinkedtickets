@@ -1,0 +1,31 @@
+.rtx-create-linked-ticket {
+    display: inline-block;
+    border: 1px #c1c1c1 solid;
+    white-space: nowrap;
+    color: #666;
+    padding: 6px;
+    margin: 6px 2px 0 0;
+    text-decoration: none !important;
+}
+
+.rtx-create-linked-ticket:visited {
+    color: #666 !important;
+}
+
+.rtx-create-linked-ticket:hover {
+    background-color: #f1f1f1;
+    -o-transition:.2s;
+    -ms-transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    transition:.2s;
+}
+
+.rtx-create-linked-ticket:hover svg {
+    color: #F05E32;
+    -o-transition:.2s;
+    -ms-transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    transition:.2s;
+}

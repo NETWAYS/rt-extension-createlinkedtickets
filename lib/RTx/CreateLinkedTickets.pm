@@ -20,6 +20,8 @@ use subs qw {
 	getConfigurationByName
 };
 
+RT->AddStyleSheets('createlinkedtickets.css');
+
 sub getConfigurationByName {
 	my $name = shift;
 	my @items = grep { $_->{'name'} eq $name } @{$config};

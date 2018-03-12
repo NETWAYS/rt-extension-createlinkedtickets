@@ -2,17 +2,16 @@
 	($can_modify ? (title_href => RT->Config->Get('WebPath')."/Ticket/ModifyLinks.html?id=".$Ticket->Id) : ()),
 	class => 'ticket-info-links'
 &>
-<div id="rtx-create-linked-tickets">
-<ul>
 % for my $link(@{ $links }) {
-	<li>
-		<a href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
-			<% $link->{'title'} %>
-		</a>
-	</li>
+	<a
+		class="rtx-create-linked-ticket"
+		href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
+% if (exists $link->{'icon'}) {
+		<span class="fa fa-<% $link->{'icon'} %>"></span>
 % }
-</ul>
-</div>
+		<% $link->{'title'} %>
+	</a>
+% }
 <script type="text/javascript">
 	if ("Ext" in window && typeof(window.Ext) === "object") {
 	
