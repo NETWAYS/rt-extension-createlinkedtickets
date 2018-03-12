@@ -16,39 +16,6 @@
 		) %></div>
 	</a>
 % }
-<script type="text/javascript">
-	if ("Ext" in window && typeof(window.Ext) === "object") {
-	
-		Ext.onReady(function() {
-			var testFunc = function(e, element, eOpts) {
-				e.preventDefault();
-				
-				var url = element.getAttribute('href');
-				
-				Ext.Msg.show({
-				     title:'Creating linked ticket',
-				     msg: 'You are about to create a linked ticket, you want to proceed?',
-				     buttons: Ext.Msg.YESNO,
-				     icon: Ext.Msg.QUESTION,
-				     fn: function(buttonId, text, opt) {
-				     	if (buttonId === "yes" && url) {
-				     		window.location.href = url;
-				     	}
-				     }
-				});
-			}
-			
-			var els = Ext.select('#rtx-create-linked-tickets ul li a');
-			
-			els.each(function(el, c, idx) {
-				el.on('click', testFunc);
-			});
-		});
-	
-	} else { 
-		alert("Please install RTx::ExtJS4 module to use this extension (RTx::CreateLinkedTickets)!");
-	} 
-</script>
 </&>
 <%init>
 	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
