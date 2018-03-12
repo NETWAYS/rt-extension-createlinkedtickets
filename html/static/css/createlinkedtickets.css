@@ -2,6 +2,7 @@
     display: inline-block;
     border: 1px #c1c1c1 solid;
     white-space: nowrap;
+    position: relative;
     color: #666;
     padding: 6px;
     margin: 6px 2px 0 0;
@@ -28,4 +29,20 @@
     -moz-transition:.2s;
     -webkit-transition:.2s;
     transition:.2s;
+}
+
+.rtx-create-linked-ticket-tooltip {
+    position: absolute;
+    z-index: 1000;
+    margin: 11px;
+    border: 1px #c1c1c1 solid;
+    padding: 9px;
+    background-color: #f1f1f1;
+    white-space: pre;
+    color: #666;
+}
+
+*:not(:hover) .rtx-create-linked-ticket-tooltip,
+.rtx-create-linked-ticket-tooltip:hover {
+    display: none;
 }

@@ -10,6 +10,10 @@
 		<span class="fa fa-<% $link->{'icon'} %>"></span>
 % }
 		<% $link->{'title'} %>
+		<div class="rtx-create-linked-ticket-tooltip"><% sprintf(
+			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
+			$link->{'template'}
+		) %></div>
 	</a>
 % }
 <script type="text/javascript">
