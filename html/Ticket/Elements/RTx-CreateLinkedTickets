@@ -9,8 +9,7 @@
 % if (exists $link->{'icon'}) {
 		<span class="fa fa-<% $link->{'icon'} %>"></span>
 % }
-		<% $link->{'title'} %>
-		<div class="rtx-create-linked-ticket-tooltip"><% sprintf(
+		<div class="rtx-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
 			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
 			$link->{'template'}
 		) %></div>

@@ -1,12 +1,12 @@
 .rtx-create-linked-ticket {
     display: inline-block;
-    border: 1px #c1c1c1 solid;
-    white-space: nowrap;
-    position: relative;
+    width: 1.5em;
+    font-size: large;
     color: #666;
-    padding: 6px;
-    margin: 6px 2px 0 0;
+    text-align: center;
+    padding: 0.25em;
     text-decoration: none !important;
+    position: relative;
 }
 
 .rtx-create-linked-ticket:visited {
@@ -34,12 +34,14 @@
 .rtx-create-linked-ticket-tooltip {
     position: absolute;
     z-index: 1000;
-    margin: 11px;
+    margin: 0.75em 0.5em;
     border: 1px #c1c1c1 solid;
-    padding: 9px;
+    padding: 0.5em;
     background-color: #f1f1f1;
-    white-space: pre;
+    white-space: nowrap;
+    font-size: small;
     color: #666;
+    white-space: pre;
 }
 
 *:not(:hover) .rtx-create-linked-ticket-tooltip,
