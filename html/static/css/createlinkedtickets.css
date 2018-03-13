@@ -48,3 +48,7 @@
 .rtx-create-linked-ticket-tooltip:hover {
     display: none;
 }
+
+.rtx-create-linked-ticket-confirmation > p {
+    white-space: pre;
+}
