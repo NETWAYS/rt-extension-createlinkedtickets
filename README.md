@@ -1,5 +1,8 @@
 This extension provide auto creation of linked tickets.
 
+Requires [RT-Extension-TicketActions](https://github.com/NETWAYS/rt-extension-ticketactions)
+for rendering Font Awesome icons.
+
 Just install as common and create a following configuration:
 
     Set($RTx_CreateLinkedTickets_Config, [
