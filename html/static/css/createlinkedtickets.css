@@ -1,0 +1,54 @@
+.rtx-create-linked-ticket {
+    display: inline-block;
+    width: 1.5em;
+    font-size: large;
+    color: #666;
+    text-align: center;
+    padding: 0.25em;
+    text-decoration: none !important;
+    position: relative;
+}
+
+.rtx-create-linked-ticket:visited {
+    color: #666 !important;
+}
+
+.rtx-create-linked-ticket:hover {
+    background-color: #f1f1f1;
+    -o-transition:.2s;
+    -ms-transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    transition:.2s;
+}
+
+.rtx-create-linked-ticket:hover svg {
+    color: #F05E32;
+    -o-transition:.2s;
+    -ms-transition:.2s;
+    -moz-transition:.2s;
+    -webkit-transition:.2s;
+    transition:.2s;
+}
+
+.rtx-create-linked-ticket-tooltip {
+    position: absolute;
+    z-index: 1000;
+    margin: 0.75em 0.5em;
+    border: 1px #c1c1c1 solid;
+    padding: 0.5em;
+    background-color: #f1f1f1;
+    white-space: nowrap;
+    font-size: small;
+    color: #666;
+    white-space: pre;
+}
+
+*:not(:hover) .rtx-create-linked-ticket-tooltip,
+.rtx-create-linked-ticket-tooltip:hover {
+    display: none;
+}
+
+.rtx-create-linked-ticket-confirmation > p {
+    white-space: pre;
+}

@@ -1,51 +1,45 @@
+% for my $link(@$links) {
+<div class="modal rtx-create-linked-ticket-confirmation" name="<% $link->{'name'} %>">
+    <h2><% $link->{'title'} %></h2>
+    <p><% sprintf(
+        loc("Create a new ticket related to this one\nbased on the template \"%s\""),
+        $link->{'template'}
+    ) %></p>
+    <p><% loc('Are you sure you want to proceed?') %></p>
+    <button rel="modal:close"><% loc('Create ticket') %></button>
+    <a rel="modal:close" class="button"><% loc('No, I changed my mind') %></a>
+</div>
+% }
+<script type="text/javascript">
+    var $ = jQuery;
+
+    $(document).on('click', '.rtx-create-linked-ticket', function(event) {
+        event.preventDefault();
+        $('.rtx-create-linked-ticket-confirmation[name="' + $(event.target).closest('a').attr('name') + '"]').modal();
+    });
+
+    $(document).on('click', '.rtx-create-linked-ticket-confirmation > button', function(event) {
+        location.href = $('.rtx-create-linked-ticket[name="' + $(event.target).closest('div').attr('name') + '"]').attr('href');
+    });
+</script>
 <&| /Widgets/TitleBox, title => loc('Create linked tickets'),
 	($can_modify ? (title_href => RT->Config->Get('WebPath')."/Ticket/ModifyLinks.html?id=".$Ticket->Id) : ()),
 	class => 'ticket-info-links'
 &>
-<div id="rtx-create-linked-tickets">
-<ul>
 % for my $link(@{ $links }) {
-	<li>
-		<a href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
-			<% $link->{'title'} %>
-		</a>
-	</li>
+	<a
+		class="rtx-create-linked-ticket"
+		name="<% $link->{'name'} %>"
+		href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
+% if (exists $link->{'icon'}) {
+		<span class="fa fa-<% $link->{'icon'} %>"></span>
 % }
-</ul>
-</div>
-<script type="text/javascript">
-	if ("Ext" in window && typeof(window.Ext) === "object") {
-	
-		Ext.onReady(function() {
-			var testFunc = function(e, element, eOpts) {
-				e.preventDefault();
-				
-				var url = element.getAttribute('href');
-				
-				Ext.Msg.show({
-				     title:'Creating linked ticket',
-				     msg: 'You are about to create a linked ticket, you want to proceed?',
-				     buttons: Ext.Msg.YESNO,
-				     icon: Ext.Msg.QUESTION,
-				     fn: function(buttonId, text, opt) {
-				     	if (buttonId === "yes" && url) {
-				     		window.location.href = url;
-				     	}
-				     }
-				});
-			}
-			
-			var els = Ext.select('#rtx-create-linked-tickets ul li a');
-			
-			els.each(function(el, c, idx) {
-				el.on('click', testFunc);
-			});
-		});
-	
-	} else { 
-		alert("Please install RTx::ExtJS4 module to use this extension (RTx::CreateLinkedTickets)!");
-	} 
-</script>
+		<div class="rtx-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
+			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
+			$link->{'template'}
+		) %></div>
+	</a>
+% }
 </&>
 <%init>
 	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');

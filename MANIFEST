@@ -1,6 +1,7 @@
 doc/README
 html/Callbacks/RTx-CreateLinkedTickets/Ticket/Display.html/BeforeDisplay
 html/Callbacks/RTx-CreateLinkedTickets/Ticket/Elements/ShowSummary/RightColumn
+html/static/css/createlinkedtickets.css
 html/Ticket/Elements/RTx-CreateLinkedTickets
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
