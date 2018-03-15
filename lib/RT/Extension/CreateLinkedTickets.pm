@@ -1,4 +1,4 @@
-package RTx::CreateLinkedTickets;
+package RT::Extension::CreateLinkedTickets;
 
 use version;
 
@@ -83,7 +83,7 @@ sub createTicketByConfiguration {
 
 =head1 NAME
 
-RTx::CreateLinkedTickets
+RT::Extension::CreateLinkedTickets
 
 =head1 VERSION
 

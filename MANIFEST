@@ -1,8 +1,8 @@
 doc/README
-html/Callbacks/RTx-CreateLinkedTickets/Ticket/Display.html/BeforeDisplay
-html/Callbacks/RTx-CreateLinkedTickets/Ticket/Elements/ShowSummary/RightColumn
+html/Callbacks/RT-Extension-CreateLinkedTickets/Ticket/Display.html/BeforeDisplay
+html/Callbacks/RT-Extension-CreateLinkedTickets/Ticket/Elements/ShowSummary/RightColumn
 html/static/css/createlinkedtickets.css
-html/Ticket/Elements/RTx-CreateLinkedTickets
+html/Ticket/Elements/RT-Extension-CreateLinkedTickets
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
@@ -17,7 +17,7 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 inc/unicore/Name.pm
 inc/YAML/Tiny.pm
-lib/RTx/CreateLinkedTickets.pm
+lib/RT/Extension/CreateLinkedTickets.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml

@@ -1,4 +1,4 @@
-<& /Ticket/Elements/RTx-CreateLinkedTickets, Ticket => $Ticket &>
+<& /Ticket/Elements/RT-Extension-CreateLinkedTickets, Ticket => $Ticket &>
 <%init>
 	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
 </%init>

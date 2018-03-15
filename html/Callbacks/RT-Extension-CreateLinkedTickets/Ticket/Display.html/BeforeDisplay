@@ -2,7 +2,7 @@
 	my $Ticket = ${$TicketObj};
 	
 	if (exists($ARGSRef->{'createLinkedTicket'}) && ref($Ticket) eq 'RT::Ticket' && $Ticket->Id) {
-		my ($id, $msg, $newTicket) = RTx::CreateLinkedTickets::createTicketByConfiguration(
+		my ($id, $msg, $newTicket) = RT::Extension::CreateLinkedTickets::createTicketByConfiguration(
 			Ticket => $Ticket,
 			Config => $ARGSRef->{'createLinkedTicket'}
 		);
