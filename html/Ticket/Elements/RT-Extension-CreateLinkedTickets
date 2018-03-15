@@ -1,5 +1,5 @@
 % for my $link(@$links) {
-<div class="modal rtx-create-linked-ticket-confirmation" name="<% $link->{'name'} %>">
+<div class="modal rt-extension-create-linked-ticket-confirmation" name="<% $link->{'name'} %>">
     <h2><% $link->{'title'} %></h2>
     <p><% sprintf(
         loc("Create a new ticket related to this one\nbased on the template \"%s\""),
@@ -13,13 +13,13 @@
 <script type="text/javascript">
     var $ = jQuery;
 
-    $(document).on('click', '.rtx-create-linked-ticket', function(event) {
+    $(document).on('click', '.rt-extension-create-linked-ticket', function(event) {
         event.preventDefault();
-        $('.rtx-create-linked-ticket-confirmation[name="' + $(event.target).closest('a').attr('name') + '"]').modal();
+        $('.rt-extension-create-linked-ticket-confirmation[name="' + $(event.target).closest('a').attr('name') + '"]').modal();
     });
 
-    $(document).on('click', '.rtx-create-linked-ticket-confirmation > button', function(event) {
-        location.href = $('.rtx-create-linked-ticket[name="' + $(event.target).closest('div').attr('name') + '"]').attr('href');
+    $(document).on('click', '.rt-extension-create-linked-ticket-confirmation > button', function(event) {
+        location.href = $('.rt-extension-create-linked-ticket[name="' + $(event.target).closest('div').attr('name') + '"]').attr('href');
     });
 </script>
 <&| /Widgets/TitleBox, title => loc('Create linked tickets'),
@@ -28,13 +28,13 @@
 &>
 % for my $link(@{ $links }) {
 	<a
-		class="rtx-create-linked-ticket"
+		class="rt-extension-create-linked-ticket"
 		name="<% $link->{'name'} %>"
 		href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
 % if (exists $link->{'icon'}) {
 		<span class="fa fa-<% $link->{'icon'} %>"></span>
 % }
-		<div class="rtx-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
+		<div class="rt-extension-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
 			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
 			$link->{'template'}
 		) %></div>
