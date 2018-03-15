@@ -1,0 +1,51 @@
+NAME
+    RT::Extension::CreateLinkedTickets
+
+DESCRIPTION
+    A simple extension that works with RT 4.4.2 which provides automatic
+    creation of linked tickets.
+
+RT VERSION
+    Works with RT 4.4.2
+
+INSTALLATION
+    perl Makefile.PL
+    make
+    make install
+        May need root permissions
+
+    Edit your /opt/rt4/etc/RT_SiteConfig.pm
+        Add this line:
+
+            Plugin('RT::Extension::CreateLinkedTickets');
+
+    Clear your mason cache
+            rm -rf /opt/rt4/var/mason_data/obj
+
+    Restart your webserver
+
+CONFIGURATION
+  $RTx_CreateLinkedTickets_Config
+        Set($RTx_CreateLinkedTickets_Config, [
+            {
+                name     => 'clt-billing',    # internal name used
+                title    => 'Billing Ticket', # title which is visible in frontend
+                template => 'CLT-Billing',    # template for RT::Action::CreateTickets (<ID>|<NAME>)
+                icon     => 'cart-plus',      # Font Awesome icon to use
+            }
+        ]);
+
+AUTHOR
+    NETWAYS GmbH support@netways.de <mailto:support@netways.de>
+
+BUGS
+    All bugs should be reported at GitHub
+    <https://github.com/NETWAYS/rt-extension-createlinkedtickets/issues>.
+
+LICENSE AND COPYRIGHT
+    This software is Copyright (c) 2018 by NETWAYS GmbH
+
+    This is free software, licensed under:
+
+      The GNU General Public License, Version 2, June 1991
+
