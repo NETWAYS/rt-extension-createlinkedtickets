@@ -121,9 +121,9 @@ Add this line:
 
 =head1 CONFIGURATION
 
-=head2 C<$RTx_CreateLinkedTickets_Config>
+=head2 C<$CreateLinkedTickets_Config>
 
-    Set($RTx_CreateLinkedTickets_Config, [
+    Set($CreateLinkedTickets_Config, [
         {
             name     => 'clt-billing',    # internal name used
             title    => 'Billing Ticket', # title which is visible in frontend

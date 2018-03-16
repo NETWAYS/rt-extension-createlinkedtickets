@@ -75,7 +75,7 @@ systemctl restart apache2
 ## Configuration
 
 ```
-Set($RTx_CreateLinkedTickets_Config, [
+Set($CreateLinkedTickets_Config, [
     {
         name     => 'clt-billing',    # internal name used
         title    => 'Billing Ticket', # title which is visible in frontend

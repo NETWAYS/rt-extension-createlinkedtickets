@@ -43,7 +43,7 @@
 </&>
 <%init>
 	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
-	my $links = RT->Config->Get('RTx_CreateLinkedTickets_Config');
+	my $links = RT->Config->Get('CreateLinkedTickets_Config');
 	
 	if (ref($links) eq 'ARRAY' && scalar(@{ $links })) {
 	
