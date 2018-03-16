@@ -1,4 +1,4 @@
-# CreateLinkedTickets Extension for Request Tracker
+# Create Linked Tickets Extension for Request Tracker
 
 #### Table of Contents
 
@@ -11,19 +11,26 @@
 
 ## About
 
-Provides automatic creation of linked tickets.
+This extension adds quick actions to create linked tickets based on
+configured templates.
+
+![Create new linked ticket](doc/create-linked-ticket.png)
+
+In order to avoid ticket creation noise (notifications to queue watchers) in the workflow, ticket creation
+must be confirmed.
+
+![Confirm new linked ticket creation](doc/create-linked-ticket-confirm.png)
 
 ## License
 
-This project is licensed under the terms of
-the GNU General Public License Version 2, Copyright held by author.
+This project is licensed under the terms of the GNU General Public License Version 2.
+
+This software is Copyright (c) 2018 by NETWAYS GmbH <[support@netways.de](mailto:support@netways.de)>.
 
 ## Support
 
-For bugs and feature requests please head over to our
-[issue tracker](https://github.com/NETWAYS/rt-extension-createlinkedtickets/issues).
-You may also send us an email to [support@netways.de](mailto:support@netways.de)
-for general questions or to get technical support.
+For bugs and feature requests please head over to our [issue tracker](https://github.com/NETWAYS/rt-extension-createlinkedtickets/issues).
+You may also send us an email to [support@netways.de](mailto:support@netways.de) for general questions or to get technical support.
 
 ## Requirements
 
