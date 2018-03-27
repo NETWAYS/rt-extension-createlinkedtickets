@@ -40,7 +40,7 @@ sub createTicketByConfiguration {
 	
 	my $c = getConfigurationByName($a->{'Config'});
 	
-	return unless (ref($c) eq 'HASH');
+	return (undef, "Could not load config for \"$a->{'Config'}\"") unless (ref($c) eq 'HASH');
 	
 	my $Ticket = $a->{'Ticket'};
 	my $User = $a->{'User'};
