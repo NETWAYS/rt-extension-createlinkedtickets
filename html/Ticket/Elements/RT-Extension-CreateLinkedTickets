@@ -31,9 +31,7 @@
 		class="rt-extension-create-linked-ticket"
 		name="<% $link->{'name'} %>"
 		href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
-% if (exists $link->{'icon'}) {
-		<span class="fa fa-<% $link->{'icon'} %>"></span>
-% }
+		<span class="fa fa-<% $link->{'icon'} // 'not-existing-icon' %>"></span>
 		<div class="rt-extension-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
 			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
 			$link->{'template'}
