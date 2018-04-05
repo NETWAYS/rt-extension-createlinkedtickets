@@ -32,6 +32,10 @@ find . -type f -name 'META.yml' -exec sed -i "s/^version: .*/version: $VERSION/g
 
 Update the [CHANGELOG.md](CHANGELOG.md) file.
 
+```
+github_changelog_generator --future-release=v$VERSION
+```
+
 ## Git Tag
 
 Commit and push these changes to the "master" branch:
