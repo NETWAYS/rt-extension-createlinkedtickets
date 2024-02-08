@@ -48,7 +48,7 @@ sub createTicketByConfiguration {
 
 	$User = $Ticket->CurrentUser unless($User);
 
-	my $Template = RT::Template->new($User);
+	my $Template = RT::Template->new(RT->SystemUser);
 	$Template->Load($c->{'template'});
 
 	if (!$Template->Id) {
