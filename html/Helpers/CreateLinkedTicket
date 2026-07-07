@@ -13,7 +13,14 @@ my ( $ok, $msg ) = RT::Extension::CreateLinkedTickets::CreateTicketByConfigurati
 $r->headers_out->{'HX-Trigger'} = JSON(
     {
         actionsChanged => { messages => [$msg], isWarning => ( $ok ? 0 : 1 ) },
-        ( $ok ? ( requestSucceeded => 1, ticketLinksChanged => '' ) : () ),
+        # Deliberately no requestSucceeded (core's listener for it calls
+        # bootstrap.Modal.getInstance(...)->hide(), racing our own
+        # data-bs-dismiss="modal" close) and no ticketLinksChanged (it
+        # fans out into three concurrent refreshes -- the Links box's own
+        # display AND its normally-hidden inline-edit form, plus a
+        # ShowDependencyStatus box elsewhere on the page -- and that
+        # combination reproducibly wipes visible content in the browser;
+        # a manual reload shows the new link instead).
     },
     ascii => 1,
 );

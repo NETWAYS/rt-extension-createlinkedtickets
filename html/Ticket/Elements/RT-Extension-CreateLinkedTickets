@@ -4,10 +4,21 @@
 %# callback after its own native "Create new ... Ticket in ..." row, so this
 %# is moved there client-side to render as the box's last row.
 %#
-%# On confirm, posts to /Helpers/CreateLinkedTicket via htmx (hx-swap="none");
-%# the response's HX-Trigger header fires actionsChanged (growl, same as
-%# other quick actions) and, on success, ticketLinksChanged (refreshes the
-%# Links box in place -- no full-page reload).
+%# The confirm button does NOT use hx-post directly: closing the modal (an
+%# async CSS transition) and firing the create request used to happen at
+%# the same time, which caused visible glitches. So instead: clicking
+%# "Create ticket" only asks Bootstrap to hide(); the request fires from
+%# hidden.bs.modal, once the modal has fully and synchronously finished
+%# closing.
+%#
+%# On success, we refresh this box's own Links display ourselves via a plain
+%# fetch() + manual innerHTML, instead of letting htmx swap it (in-place
+%# htmx swaps of this specific region were unreliable here) or dispatching
+%# the global ticketLinksChanged event (which also refreshes the Links box's
+%# normally-hidden inline-edit form and an unrelated ShowDependencyStatus box
+%# elsewhere on the page -- that combination was wiping visible content).
+%# Because a plain innerHTML assignment doesn't execute the fresh copy's
+%# <script>, setup is a named function we call again by hand afterward.
 <div id="rt-extension-createlinkedtickets">
   <div class="row mt-2">
     <div class="col-auto label rt-extension-createlinkedtickets-label">
@@ -42,8 +53,7 @@
       </div>
       <div class="modal-footer">
         <a href="javascript:void(0)" class="btn btn-secondary" data-bs-dismiss="modal"><% loc('No, I changed my mind') %></a>
-        <a href="#" id="rt-extension-createlinkedtickets-confirm-create" class="btn btn-primary" data-bs-dismiss="modal"
-           hx-post="<% RT->Config->Get('WebPath') %>/Helpers/CreateLinkedTicket" hx-swap="none"
+        <a href="javascript:void(0)" id="rt-extension-createlinkedtickets-confirm-create" class="btn btn-primary"
         ><% loc('Create ticket') %></a>
       </div>
     </div>
@@ -51,24 +61,65 @@
 </div>
 
 <script type="text/javascript">
-(function () {
+function rtExtensionCreateLinkedTicketsInit() {
     var ours = document.getElementById('rt-extension-createlinkedtickets');
     var native = document.getElementById('create-linked-ticket');
     if (ours && native) {
         native.insertAdjacentElement('afterend', ours);
     }
-})();
 
-document.getElementById('rt-extension-createlinkedtickets-confirm-modal').addEventListener('show.bs.modal', function () {
-    var select = document.getElementById('rt-extension-createlinkedtickets-select');
-    var option = select.options[select.selectedIndex];
-    document.getElementById('rt-extension-createlinkedtickets-confirm-name').textContent = option.text;
-    document.getElementById('rt-extension-createlinkedtickets-confirm-description').textContent = option.title;
-    document.getElementById('rt-extension-createlinkedtickets-confirm-create').setAttribute('hx-vals', JSON.stringify({
-        id: '<% $Ticket->id %>',
-        CreateLinkedTicket: option.value
-    }));
-});
+    var modalEl = document.getElementById('rt-extension-createlinkedtickets-confirm-modal');
+    if (!modalEl) {
+        return;
+    }
+    var confirmed = null;
+
+    modalEl.addEventListener('show.bs.modal', function () {
+        var select = document.getElementById('rt-extension-createlinkedtickets-select');
+        var option = select.options[select.selectedIndex];
+        document.getElementById('rt-extension-createlinkedtickets-confirm-name').textContent = option.text;
+        document.getElementById('rt-extension-createlinkedtickets-confirm-description').textContent = option.title;
+        confirmed = null;
+    });
+
+    document.getElementById('rt-extension-createlinkedtickets-confirm-create').addEventListener('click', function () {
+        var select = document.getElementById('rt-extension-createlinkedtickets-select');
+        var option = select.options[select.selectedIndex];
+        confirmed = {
+            id: '<% $Ticket->id %>',
+            CreateLinkedTicket: option.value
+        };
+        bootstrap.Modal.getInstance(modalEl).hide();
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function () {
+        if (!confirmed) {
+            return;
+        }
+        var values = confirmed;
+        confirmed = null;
+        htmx.ajax('POST', <% RT->Config->Get('WebPath') |n,j %> + '/Helpers/CreateLinkedTicket', {
+            source: document.getElementById('rt-extension-createlinkedtickets-confirm-create'),
+            values: values,
+            swap: 'none'
+        }).then(function () {
+            var row = document.getElementById('rt-extension-createlinkedtickets');
+            var display = row && row.closest('.inline-edit-display');
+            if (!display) {
+                return;
+            }
+            fetch(<% RT->Config->Get('WebPath') |n,j %>
+                + '/Views/Component/ShowLinks?ObjectType=RT::Ticket&ObjectId=<% $Ticket->id %>')
+                .then(function (resp) { return resp.text(); })
+                .then(function (html) {
+                    display.innerHTML = html;
+                    rtExtensionCreateLinkedTicketsInit();
+                });
+        });
+    });
+}
+
+rtExtensionCreateLinkedTicketsInit();
 </script>
 <%INIT>
 my $entries = RT::Extension::CreateLinkedTickets::VisibleEntries($Ticket);

@@ -13,8 +13,8 @@
 
 Allows to quickly create linked tickets based on templates.
 
-The extension adds a "Create linked tickets" quick action right below the "Links" box in a ticket's
-overview: a select box of configured linked-ticket types plus a "Create ticket" button. An entry can be
+The extension adds a "Create linked tickets" quick action as the last row inside the "Links" box in a
+ticket's overview: a select box of configured linked-ticket types plus a "Create" button. An entry can be
 restricted to specific queues, in which case it's only shown on tickets in a matching queue.
 
 In order to avoid ticket creation noise (notifications to queue watchers) in the workflow, ticket creation
@@ -105,4 +105,9 @@ Version 3.0.0 requires RT 6 and replaces the config shape entirely: `icon` and `
 `template` (a template *name*) is replaced by `content` (the template *text* itself), and entries gained
 `id` and `description`. Old-shape entries are skipped with a logged warning rather than misbehaving. Your
 previously admin-managed Templates are no longer used and may be deleted once their `Content` has been
-copied into `content`.
+copied into `content` -- but keep them, and the old 2.x config, around until 3.0.0 is confirmed working
+in production: rolling back to 2.1.0 needs both, since it can't read the 3.0.0 config shape.
+
+If upgrading in place rather than via a fresh `make install` into a clean plugin directory, remove the
+old 2.x plugin files first (`make install` copies files but never removes ones that no longer exist in
+this release, such as `Ticket/Display.html/BeforeDisplay`), then clear the mason cache.

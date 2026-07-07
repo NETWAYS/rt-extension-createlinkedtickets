@@ -142,6 +142,11 @@ sub CreateTicketByConfiguration {
         Content => $entry->{content},
     );
 
+    # No TransactionObj: this isn't a scrip reacting to a real transaction
+    # on $ticket, so there's no correct one to attach. RT logs a benign
+    # "No transaction object handed to ..." warning for this; passing some
+    # unrelated existing transaction just to silence it would make
+    # $TransactionObj wrong if a template ever referenced it.
     my $action = RT::Action::CreateTickets->new(
         CurrentUser => $user,
         TemplateObj => $template,
@@ -172,11 +177,11 @@ RT::Extension::CreateLinkedTickets
 
 Allows to quickly create linked tickets based on templates.
 
-The extension adds a "Create linked tickets" quick action right below the
-"Links" box in a ticket's overview: a select box of configured linked-ticket
-types plus a "Create ticket" button. In order to avoid ticket creation noise
-(notifications to queue watchers) in the workflow, ticket creation must be
-confirmed.
+The extension adds a "Create linked tickets" quick action as the last row
+inside the "Links" box in a ticket's overview: a select box of configured
+linked-ticket types plus a "Create" button. In order to avoid ticket creation
+noise (notifications to queue watchers) in the workflow, ticket creation must
+be confirmed.
 
 =head1 RT VERSION
 
@@ -244,7 +249,15 @@ and C<title> are gone, C<template> (a template I<name>) is replaced by
 C<content> (the template I<text> itself), and entries gained C<id> and
 C<description>. Old-shape entries are skipped with a logged warning rather
 than misbehaving. Your previously admin-managed Templates are no longer used
-and may be deleted once their C<Content> has been copied into C<content>.
+and may be deleted once their C<Content> has been copied into C<content>
+-- but keep them, and the old 2.x config, around until 3.0.0 is confirmed
+working in production: rolling back to 2.1.0 needs both, since it can't
+read the 3.0.0 config shape.
+
+If upgrading in place rather than via a fresh C<make install> into a clean
+plugin directory, remove the old 2.x plugin files first (C<make install>
+copies files but never removes ones that no longer exist in this release,
+such as C<Ticket/Display.html/BeforeDisplay>), then clear the mason cache.
 
 =head1 AUTHOR
 
