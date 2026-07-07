@@ -1,0 +1,7 @@
+<& /Ticket/Elements/RT-Extension-CreateLinkedTickets, Ticket => $Object &>
+<%init>
+return unless $Object && $Object->isa('RT::Ticket') && $Object->id;
+</%init>
+<%args>
+$Object => undef
+</%args>

@@ -13,14 +13,12 @@
 
 Allows to quickly create linked tickets based on templates.
 
-The extension adds configurable quick actions right under the "Links" widget in a ticket's overview.
-
-![Create new linked ticket](doc/create-linked-ticket.png)
+The extension adds a "Create linked tickets" quick action right below the "Links" box in a ticket's
+overview: a select box of configured linked-ticket types plus a "Create ticket" button. An entry can be
+restricted to specific queues, in which case it's only shown on tickets in a matching queue.
 
 In order to avoid ticket creation noise (notifications to queue watchers) in the workflow, ticket creation
 must be confirmed.
-
-![Confirm new linked ticket creation](doc/create-linked-ticket-confirm.png)
 
 ## License
 
@@ -35,9 +33,7 @@ You may also send us an email to [support@netways.de](mailto:support@netways.de)
 
 ## Requirements
 
-- RT 4.4.2
-- [RT::Extension::TicketActions](https://github.com/NETWAYS/rt-extension-ticketactions)
-  (Provides "Font Awesome" icon integration.)
+- RT 6.0.0
 
 ## Installation
 
@@ -60,7 +56,7 @@ Navigate into the source directory and install the extension.
     make
     make install
 
-Edit your `/opt/rt4/etc/RT_SiteConfig.pm`
+Edit your `/opt/rt/etc/RT_SiteConfig.pm`
 
 Add this line:
 
@@ -68,44 +64,45 @@ Add this line:
 
 Clear your mason cache:
 
-    rm -rf /opt/rt4/var/mason_data/obj
+    rm -rf /opt/rt/var/mason_data/obj
 
 Restart your webserver.
 
 ## Configuration
 
 The only configuration option required by this extension is `$CreateLinkedTickets_Config`.
-This is a list of hashes each representing a quick action to show.
+This is a list of hashes, each representing a linked-ticket type to offer. No admin-managed Template
+object is needed -- the [RT::Action::CreateTickets](https://docs.bestpractical.com/rt/6.0/RT/Action/CreateTickets.html)
+template text lives directly in `content`.
 
 ```perl
 Set($CreateLinkedTickets_Config, [
     {
-        name     => 'clt-billing',    # Internal name used
-        icon     => 'cart-plus',      # Font Awesome icon to use for the action
-        title    => 'Billing Ticket', # Title which is visible in the action's tooltip
-        template => 'CLT-Billing',    # Template for RT::Action::CreateTickets (<ID>|<NAME>)
-    },
-]);
-```
-
-Additionally each of those hashes needs to reference a template that is passed to
-[RT::Action::CreateTickets](https://docs.bestpractical.com/rt/4/RT/Action/CreateTickets.html).
-
-For more information on how to write templates please refer to the official documentation linked above.
-
-### Template
-
-Please note that this is a very basic example and should generally work. The only thing you need to adjust
-is the given `Queue` so that it's valid one.
-
-```
+        id          => 'billing',                 # Required, unique. Used to reference this entry.
+        name        => 'Billing Ticket',          # Required. Display label in the select box.
+        description => 'Creates a billing ticket linked to this one.',  # Optional. Tooltip/help text.
+        queue       => ['Support', 'Sales'],       # Optional. Arrayref of queue names or ids.
+                                                    # Only shown on tickets in a matching queue.
+                                                    # Omit to show for every queue.
+        content     => <<'ENDOFTEMPLATE',          # Required. RT::Action::CreateTickets template text.
 ===Create-Ticket: billing-ticket
 Subject: Billing: {$Tickets{'TOP'}->Subject}
 Refers-To: {$Tickets{'TOP'}->Id}
 Queue: Finance
 Content: Billing ticket for Ticket #{$Tickets{'TOP'}->Id} ({$Tickets{'TOP'}->Subject}) created.
 ENDOFCONTENT
+ENDOFTEMPLATE
+    },
+]);
 ```
 
-Just create this template by navigating to "Admin -> Global -> Templates -> Create", select `Perl` as type
-and give it `CLT-Billing` as name and you're good to go.
+For more information on how to write the template text, see
+[RT::Action::CreateTickets](https://docs.bestpractical.com/rt/6.0/RT/Action/CreateTickets.html).
+
+### Upgrading from 2.x
+
+Version 3.0.0 requires RT 6 and replaces the config shape entirely: `icon` and `title` are gone,
+`template` (a template *name*) is replaced by `content` (the template *text* itself), and entries gained
+`id` and `description`. Old-shape entries are skipped with a logged warning rather than misbehaving. Your
+previously admin-managed Templates are no longer used and may be deleted once their `Content` has been
+copied into `content`.

@@ -1,57 +1,79 @@
-% for my $link(@$links) {
-<div class="modal rt-extension-create-linked-ticket-confirmation" name="<% $link->{'name'} %>">
-    <h2><% $link->{'title'} %></h2>
-    <p><% sprintf(
-        loc("Create a new ticket related to this one\nbased on the template \"%s\""),
-        $link->{'template'}
-    ) %></p>
-    <p><% loc('Are you sure you want to proceed?') %></p>
-    <button rel="modal:close"><% loc('Create ticket') %></button>
-    <a rel="modal:close" class="button"><% loc('No, I changed my mind') %></a>
+%# Select-based quick action for creating a linked ticket, rendered as an
+%# extra row inside the native Links box via the Elements/ShowLinks/Default
+%# callback ("Allow people to add more rows to the table"). ShowLinks has no
+%# callback after its own native "Create new ... Ticket in ..." row, so this
+%# is moved there client-side to render as the box's last row.
+%#
+%# On confirm, posts to /Helpers/CreateLinkedTicket via htmx (hx-swap="none");
+%# the response's HX-Trigger header fires actionsChanged (growl, same as
+%# other quick actions) and, on success, ticketLinksChanged (refreshes the
+%# Links box in place -- no full-page reload).
+<div id="rt-extension-createlinkedtickets">
+  <div class="row mt-2">
+    <div class="col-auto label rt-extension-createlinkedtickets-label">
+      <label for="rt-extension-createlinkedtickets-select"><% loc('Create linked ticket') %></label>
+    </div>
+    <div class="col-auto">
+      <select class="form-select selectpicker" id="rt-extension-createlinkedtickets-select" aria-label="<% loc('Linked ticket type') %>">
+% for my $entry (@$entries) {
+        <option value="<% $entry->{id} %>" title="<% $entry->{description} %>"><% $entry->{name} %></option>
+% }
+      </select>
+    </div>
+    <div class="col-auto">
+      <a href="#rt-extension-createlinkedtickets-confirm-modal" class="btn btn-primary" data-bs-toggle="modal" role="button"><% loc('Create') %></a>
+    </div>
+  </div>
 </div>
-% }
+
+<div class="modal" id="rt-extension-createlinkedtickets-confirm-modal">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><% loc('Create linked ticket') %></h5>
+        <a href="javascript:void(0)" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </a>
+      </div>
+      <div class="modal-body">
+        <p><strong id="rt-extension-createlinkedtickets-confirm-name"></strong></p>
+        <p id="rt-extension-createlinkedtickets-confirm-description"></p>
+        <p><% loc('Are you sure you want to proceed?') %></p>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:void(0)" class="btn btn-secondary" data-bs-dismiss="modal"><% loc('No, I changed my mind') %></a>
+        <a href="#" id="rt-extension-createlinkedtickets-confirm-create" class="btn btn-primary" data-bs-dismiss="modal"
+           hx-post="<% RT->Config->Get('WebPath') %>/Helpers/CreateLinkedTicket" hx-swap="none"
+        ><% loc('Create ticket') %></a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script type="text/javascript">
-    var $ = jQuery;
+(function () {
+    var ours = document.getElementById('rt-extension-createlinkedtickets');
+    var native = document.getElementById('create-linked-ticket');
+    if (ours && native) {
+        native.insertAdjacentElement('afterend', ours);
+    }
+})();
 
-    $(document).on('click', '.rt-extension-create-linked-ticket', function(event) {
-        event.preventDefault();
-        $('.rt-extension-create-linked-ticket-confirmation[name="' + $(event.target).closest('a').attr('name') + '"]').modal();
-    });
-
-    $(document).on('click', '.rt-extension-create-linked-ticket-confirmation > button', function(event) {
-        location.href = $('.rt-extension-create-linked-ticket[name="' + $(event.target).closest('div').attr('name') + '"]').attr('href');
-    });
+document.getElementById('rt-extension-createlinkedtickets-confirm-modal').addEventListener('show.bs.modal', function () {
+    var select = document.getElementById('rt-extension-createlinkedtickets-select');
+    var option = select.options[select.selectedIndex];
+    document.getElementById('rt-extension-createlinkedtickets-confirm-name').textContent = option.text;
+    document.getElementById('rt-extension-createlinkedtickets-confirm-description').textContent = option.title;
+    document.getElementById('rt-extension-createlinkedtickets-confirm-create').setAttribute('hx-vals', JSON.stringify({
+        id: '<% $Ticket->id %>',
+        CreateLinkedTicket: option.value
+    }));
+});
 </script>
-<&| /Widgets/TitleBox, title => loc('Create linked tickets'),
-	($can_modify ? (title_href => RT->Config->Get('WebPath')."/Ticket/ModifyLinks.html?id=".$Ticket->Id) : ()),
-	class => 'ticket-info-links'
-&>
-% for my $link(@{ $links }) {
-	<a
-		class="rt-extension-create-linked-ticket"
-		name="<% $link->{'name'} %>"
-		href="<%RT->Config->Get('WebPath')%>/Ticket/Display.html?createLinkedTicket=<% $link->{'name'} %>&id=<% $Ticket->Id %>">
-		<span class="fa fa-<% $link->{'icon'} // 'not-existing-icon' %>"></span>
-		<div class="rt-extension-create-linked-ticket-tooltip"><strong><% $link->{'title'} %></strong><br><% sprintf(
-			loc("Create a new ticket related to this one\nbased on the template \"%s\""),
-			$link->{'template'}
-		) %></div>
-	</a>
-% }
-</&>
-<%init>
-	my $can_modify = $Ticket->CurrentUserHasRight('ModifyTicket');
-	my $links = RT->Config->Get('CreateLinkedTickets_Config');
-	
-	if (ref($links) eq 'ARRAY' && scalar(@{ $links })) {
-	
-	} else {
-		return;
-	} 
-</%init>
-<%once>
-	use Data::Dumper;
-</%once>
-<%args>
-	$Ticket => undef
-</%args>
+<%INIT>
+my $entries = RT::Extension::CreateLinkedTickets::VisibleEntries($Ticket);
+return unless @$entries;
+</%INIT>
+<%ARGS>
+$Ticket
+</%ARGS>

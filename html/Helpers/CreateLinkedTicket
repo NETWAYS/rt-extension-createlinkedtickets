@@ -1,0 +1,20 @@
+% $m->abort;
+<%ARGS>
+$id => undef
+$CreateLinkedTicket => undef
+</%ARGS>
+<%INIT>
+my $TicketObj = LoadTicket($id);
+my ( $ok, $msg ) = RT::Extension::CreateLinkedTickets::CreateTicketByConfiguration(
+    Ticket => $TicketObj,
+    Id     => $CreateLinkedTicket,
+);
+
+$r->headers_out->{'HX-Trigger'} = JSON(
+    {
+        actionsChanged => { messages => [$msg], isWarning => ( $ok ? 0 : 1 ) },
+        ( $ok ? ( requestSucceeded => 1, ticketLinksChanged => '' ) : () ),
+    },
+    ascii => 1,
+);
+</%INIT>
