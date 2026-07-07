@@ -2,7 +2,7 @@ package RT::Extension::CreateLinkedTickets;
 
 use version;
 
-our $VERSION='2.0.1';
+our $VERSION='2.1.0';
 
 use strict;
 
